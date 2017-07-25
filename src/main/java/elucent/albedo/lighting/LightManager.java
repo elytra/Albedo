@@ -33,9 +33,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import elucent.albedo.util.ShaderUtil;
+import elucent.albedo.Albedo;
 import elucent.albedo.ConfigManager;
 import elucent.albedo.event.GatherLightsEvent;
 import elucent.albedo.lighting.Light;
@@ -74,16 +76,38 @@ public class LightManager {
 			if (e instanceof ILightProvider){
 				addLight(((ILightProvider)e).provideLight());
 			}
+			if (e.hasCapability(Albedo.LIGHT_CAP, null)){
+				addLight(capabilityToLight(e,e.getCapability(Albedo.LIGHT_CAP, null)));
+			}
 		}
 		for (TileEntity t : world.loadedTileEntityList) {
 			if (t instanceof ILightProvider) {
 				addLight(((ILightProvider)t).provideLight());
+			}
+			if (t.hasCapability(Albedo.LIGHT_CAP, null)){
+				addLight(capabilityToLight(t,t.getCapability(Albedo.LIGHT_CAP, null)));
 			}
 		}
 		
 		lights.sort(distComparator);
 	}
 	
+	
+	public static Light capabilityToLight(Object o, LightProviderCapability c) {
+		//Construct a light with the data stored in the capability and the position of the object
+		BlockPos pos = null;
+		if(o instanceof TileEntity){
+			TileEntity te = (TileEntity) o;
+			pos = te.getPos();
+		} else if(o instanceof Entity){
+			Entity e = (Entity) o;
+			pos = e.getPosition();
+		} else {
+			return null;
+		}
+		return Light.builder().pos(pos).color(c.getR(), c.getG(), c.getG(), c.getA()).radius(c.getRadius()).build();
+	}
+
 	public static void clear() {
 		lights.clear();
 	}

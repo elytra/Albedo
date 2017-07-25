@@ -24,10 +24,13 @@
 
 package elucent.albedo;
 
+import elucent.albedo.lighting.LightProviderCapability;
 import elucent.albedo.util.ShaderUtil;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.IReloadableResourceManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -37,6 +40,9 @@ public class Albedo {
 	public static final String MODID = "albedo";
 	public static final String VERSION = "2.0";
 	public static final String NAME = "Albedo";
+	
+	@CapabilityInject(LightProviderCapability.class)
+	public static final Capability<LightProviderCapability> LIGHT_CAP = null;
 	
 	public static boolean initialized = false;
 
@@ -48,6 +54,8 @@ public class Albedo {
 		
 		MinecraftForge.EVENT_BUS.register(new EventManager());
 		MinecraftForge.EVENT_BUS.register(new ConfigManager());
+		
+		LightProviderCapability.register();
 		
 		ConfigManager.init(event.getSuggestedConfigurationFile());
 	}
