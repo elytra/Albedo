@@ -22,19 +22,32 @@
  * SOFTWARE.
  */
 
-package elucent.albedo.item;
+package elucent.albedo.asm;
 
-import java.util.Map;
+import org.objectweb.asm.tree.InsnNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.VarInsnNode;
 
-import com.google.common.collect.Maps;
+import com.elytradev.mini.MiniTransformer;
+import com.elytradev.mini.PatchContext;
+import com.elytradev.mini.annotation.Patch;;
 
-import net.minecraft.item.Item;
+@Patch.Class("net.minecraft.client.renderer.ChunkRenderContainer")
+public class ChunkRenderContainerTransformer extends MiniTransformer {
 
-public class ItemRenderRegistry {
-	public static final Map<Item, IItemSpecialRenderer> itemRenderMap = Maps.newHashMap();
-
-	public static void register(Item i, IItemSpecialRenderer r) {
-		itemRenderMap.put(i, r);
+	@Patch.Method(
+			srg="func_178003_a",
+			mcp="preRenderChunk",
+			descriptor="(Lnet/minecraft/client/renderer/chunk/RenderChunk;)V"
+		)
+	public void patchPreRenderChunk(PatchContext ctx) {
+		ctx.jumpToEnd();
+		ctx.searchBackward(new InsnNode(RETURN)).jumpBefore();
+		ctx.add(
+				new VarInsnNode(ALOAD, 1),
+				new MethodInsnNode(INVOKESTATIC, "elucent/albedo/asm/Hooks", "preRenderChunk", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)V", false)
+			);
 	}
+	
 	
 }
