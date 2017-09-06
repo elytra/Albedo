@@ -22,27 +22,23 @@
  * SOFTWARE.
  */
 
-package elucent.albedo.event;
+package com.elytradev.mirage.gui;
 
-import java.util.ArrayList;
+import com.elytradev.mirage.Mirage;
+import com.elytradev.mirage.ConfigManager;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.common.config.ConfigElement;
+import net.minecraftforge.fml.client.config.GuiConfig;
 
-import elucent.albedo.lighting.Light;
-import net.minecraftforge.fml.common.eventhandler.Event;
+public class GuiMirageConfig extends GuiConfig {
 
-public class GatherLightsEvent extends Event {
-	private final ArrayList<Light> lights;
-
-	public GatherLightsEvent(ArrayList<Light> lights) {
-		super();
-		this.lights = lights;
+	public GuiMirageConfig(GuiScreen parentScreen) {
+		super(parentScreen, 
+				new ConfigElement(ConfigManager.config.getCategory("light")).getChildElements(),
+				Mirage.MODID,
+				false,
+				false,
+				"Mirage Config");
 	}
 
-	public ArrayList<Light> getLightList() {
-		return lights;
-	}
-
-	@Override
-	public boolean isCancelable() {
-		return false;
-	}
 }

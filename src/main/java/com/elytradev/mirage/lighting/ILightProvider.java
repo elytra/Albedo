@@ -22,29 +22,15 @@
  * SOFTWARE.
  */
 
-package elucent.albedo.asm;
+package com.elytradev.mirage.lighting;
 
-import org.objectweb.asm.tree.InsnNode;
-import org.objectweb.asm.tree.MethodInsnNode;
+import javax.annotation.Nullable;
 
-import com.elytradev.mini.MiniTransformer;
-import com.elytradev.mini.PatchContext;
-import com.elytradev.mini.annotation.Patch;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Patch.Class("net.minecraft.client.renderer.RenderGlobal")
-public class RenderGlobalTransformer extends MiniTransformer {
-	
-	@Patch.Method(
-			srg="func_174982_a",
-			mcp="renderBlockLayer",
-			descriptor="(Lnet/minecraft/util/BlockRenderLayer;)V"
-		)
-	public void patchRenderBlockLayer(PatchContext ctx) {
-		ctx.jumpToStart();
-		ctx.add(new MethodInsnNode(INVOKESTATIC, "elucent/albedo/asm/Hooks", "enableLightShader", "()V", false));
-		ctx.jumpToEnd();
-		ctx.searchBackward(new InsnNode(RETURN)).jumpBefore();
-		ctx.add(new MethodInsnNode(INVOKESTATIC, "elucent/albedo/asm/Hooks", "disableLightShader", "()V", false));
-	}
-	
+public interface ILightProvider {
+	@SideOnly(Side.CLIENT)
+	@Nullable
+	public Light provideLight();
 }

@@ -22,47 +22,22 @@
  * SOFTWARE.
  */
 
-package elucent.albedo;
+package com.elytradev.mirage.asm;
 
-import net.minecraftforge.common.config.Configuration;
-import net.minecraftforge.fml.client.event.ConfigChangedEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.elytradev.mini.MiniCoremod;
 
-import java.io.File;
+import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
-public class ConfigManager {
+@IFMLLoadingPlugin.TransformerExclusions({"com.elytradev.mini", "com.elytradev.mirage.asm"})
+@IFMLLoadingPlugin.MCVersion("1.12")
+@IFMLLoadingPlugin.SortingIndex(1001)
+public class FMLPlugin extends MiniCoremod {
 
-	public static Configuration config;
-
-	// LIGHTING
-	public static int maxLights;
-	public static boolean enableLights;
-
-	public static void init(File configFile) {
-		if (config == null) {
-			config = new Configuration(configFile);
-			load();
-		}
+	public FMLPlugin() {
+		super(
+				RenderGlobalTransformer.class,
+				ChunkRenderContainerTransformer.class
+			);
 	}
 
-	public static void load() {
-		config.addCustomCategoryComment("light",
-				"Settings related to lighting.");
-
-		maxLights = config.getInt("maxLights", "light", 10, 0, 100,
-				"The maximum number of lights allowed to render in a scene. Lights are sorted nearest-first, so further-away lights will be culled after nearer lights.");
-		enableLights = config.getBoolean("enableLights", "light", true,
-				"Enables lighting in general.");
-
-		if (config.hasChanged()) {
-			config.save();
-		}
-	}
-
-	@SubscribeEvent
-	public void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-		if (event.getModID().equalsIgnoreCase(Albedo.MODID)) {
-			load();
-		}
-	}
 }

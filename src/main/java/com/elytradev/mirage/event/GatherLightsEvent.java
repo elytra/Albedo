@@ -22,34 +22,27 @@
  * SOFTWARE.
  */
 
-package elucent.albedo.gui;
+package com.elytradev.mirage.event;
 
-import java.util.Set;
+import java.util.ArrayList;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.client.IModGuiFactory;
+import com.elytradev.mirage.lighting.Light;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
-public class AlbedoGuiFactory implements IModGuiFactory {
+public class GatherLightsEvent extends Event {
+	private final ArrayList<Light> lights;
 
-	@Override
-	public void initialize(Minecraft minecraftInstance) {
+	public GatherLightsEvent(ArrayList<Light> lights) {
+		super();
+		this.lights = lights;
+	}
 
+	public ArrayList<Light> getLightList() {
+		return lights;
 	}
 
 	@Override
-	public boolean hasConfigGui() {
-		return true;
+	public boolean isCancelable() {
+		return false;
 	}
-	
-	@Override
-	public GuiScreen createConfigGui(GuiScreen parentScreen) {
-		return new GuiAlbedoConfig(parentScreen);
-	}
-
-	@Override
-	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-		return null;
-	}
-
 }

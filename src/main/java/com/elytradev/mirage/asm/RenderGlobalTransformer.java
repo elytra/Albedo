@@ -22,32 +22,29 @@
  * SOFTWARE.
  */
 
-package elucent.albedo.asm;
+package com.elytradev.mirage.asm;
 
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
-import org.objectweb.asm.tree.VarInsnNode;
 
 import com.elytradev.mini.MiniTransformer;
 import com.elytradev.mini.PatchContext;
-import com.elytradev.mini.annotation.Patch;;
+import com.elytradev.mini.annotation.Patch;
 
-@Patch.Class("net.minecraft.client.renderer.ChunkRenderContainer")
-public class ChunkRenderContainerTransformer extends MiniTransformer {
-
+@Patch.Class("net.minecraft.client.renderer.RenderGlobal")
+public class RenderGlobalTransformer extends MiniTransformer {
+	
 	@Patch.Method(
-			srg="func_178003_a",
-			mcp="preRenderChunk",
-			descriptor="(Lnet/minecraft/client/renderer/chunk/RenderChunk;)V"
+			srg="func_174982_a",
+			mcp="renderBlockLayer",
+			descriptor="(Lnet/minecraft/util/BlockRenderLayer;)V"
 		)
-	public void patchPreRenderChunk(PatchContext ctx) {
+	public void patchRenderBlockLayer(PatchContext ctx) {
+		ctx.jumpToStart();
+		ctx.add(new MethodInsnNode(INVOKESTATIC, "com/elytradev/mirage/asm/Hooks", "enableLightShader", "()V", false));
 		ctx.jumpToEnd();
 		ctx.searchBackward(new InsnNode(RETURN)).jumpBefore();
-		ctx.add(
-				new VarInsnNode(ALOAD, 1),
-				new MethodInsnNode(INVOKESTATIC, "elucent/albedo/asm/Hooks", "preRenderChunk", "(Lnet/minecraft/client/renderer/chunk/RenderChunk;)V", false)
-			);
+		ctx.add(new MethodInsnNode(INVOKESTATIC, "com/elytradev/mirage/asm/Hooks", "disableLightShader", "()V", false));
 	}
-	
 	
 }

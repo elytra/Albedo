@@ -22,22 +22,34 @@
  * SOFTWARE.
  */
 
-package elucent.albedo.asm;
+package com.elytradev.mirage.gui;
 
-import com.elytradev.mini.MiniCoremod;
+import java.util.Set;
 
-import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.client.IModGuiFactory;
 
-@IFMLLoadingPlugin.TransformerExclusions({"com.elytradev.mini", "elucent.albedo.asm"})
-@IFMLLoadingPlugin.MCVersion("1.12")
-@IFMLLoadingPlugin.SortingIndex(1001)
-public class FMLPlugin extends MiniCoremod {
+public class MirageGuiFactory implements IModGuiFactory {
 
-	public FMLPlugin() {
-		super(
-				RenderGlobalTransformer.class,
-				ChunkRenderContainerTransformer.class
-			);
+	@Override
+	public void initialize(Minecraft minecraftInstance) {
+
+	}
+
+	@Override
+	public boolean hasConfigGui() {
+		return true;
+	}
+	
+	@Override
+	public GuiScreen createConfigGui(GuiScreen parentScreen) {
+		return new GuiMirageConfig(parentScreen);
+	}
+
+	@Override
+	public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
+		return null;
 	}
 
 }
